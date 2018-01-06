@@ -1,18 +1,25 @@
 <?php
-require once "../config.php";
+require_once "../config.php";
 
 use \TSUGI\Core\LTIX;
+use \Tsugi\UI\SettingsForm;
 
-$LAUNCH = LTIX::reqireData();
+$LTI = \Tsugi\Core\LTIX::requireData(array('link_id'));
+
+// Handle the POST Request
+if ( SettingsForm::handleSettingsPost() ) {
+    header('Location: '.addSession('index.php') ) ;
+    return;
+}
 
 // Create the view
 $OUTPUT->header();
 $OUTPUT->bodyStart();
 $OUTPUT->topNav();
 ?>
-// Stuff
+
 <p>I guess it's working</p>
 
-<?php>
+<?php
 $OUTPUT->footer();
 ?>
