@@ -11,13 +11,18 @@ $p = $CFG->dbprefix;
 $target = Settings::linkGet('target');
 
 if (isset($_POST['guess'])){ // Is POST set?
+  $message = '';
   if ($USER->instructor) { // It's an instructor
     if (isset($_POST['set'])) { // We're setting a new number
       Settings::linkSet('target', $_POST['guess']);
-      $_SESSION['success'] = 'Target Updated - New Number: '.$_POST['guess'];
+      $message = 'Target Updated - New Number: '.$_POST['guess'];
+      // Clear the student's guesses
+      $PDOX->queryDie("DELETE FROM {$p}helloTsugi WHERE link_id = :LI",
+            array(':LI' => $LINK->id)
+        );
     }
   } else { // It's a student
-    $message = '';
+    // If this student doesn't already have an entry, make one, otherwise increment guesses by 1
     $PDOX->queryDie("INSERT INTO {$p}helloTsugi
           (link_id, user_id, guesses, correct)
           VALUES ( :LI, :UI, 1, False)
@@ -43,8 +48,8 @@ if (isset($_POST['guess'])){ // Is POST set?
             )
       );
     }
-    $_SESSION['success'] = $message; // Tell the student how they did.
   }
+  $_SESSION['success'] = $message; // Use flashMessages to give the user a message
   header( 'Location: '.addSession('index.php') ) ;
   return;
 }
