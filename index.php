@@ -33,6 +33,7 @@ if (isset($_POST['guess'])){ // Is POST set?
       $message = 'Lower...';
     } else {
       $message = 'Correct!';
+      // Set 'correct' to True for this user.
       $PDOX->queryDie("UPDATE {$p}helloTsugi
             SET correct = True
             WHERE link_id=:LI AND user_id=:UI",
@@ -56,8 +57,14 @@ if ( $USER->instructor ) {
             WHERE link_id = :LI ORDER BY user_id",
             array(':LI' => $LINK->id)
     );
-} else {
-    $rows = false;
+} else { // Get the status for this student
+    $rows = $PDOX->rowDie("SELECT guesses, correct FROM {$p}helloTsugi
+      WHERE link_id=:LI AND user_id=:UI",
+      array(
+          ':LI' => $LINK->id,
+          ':UI' => $USER->id
+      )
+    );
 }
 
 // Create the view
@@ -68,19 +75,26 @@ $OUTPUT->flashMessages();
 
 echo('<form method="post">');
 if ($USER->instructor) {
+  echo('Current Number: '.$target);
   echo('<p><label for="guess">Enter Number for Students to Guess:</label>');
   echo('<input type="text" name="guess" value=""><br/>');
-  echo('<input type="submit" class="btn btn-normal" name="set" value="Set Guess">');
+  echo('<input type="submit" class="btn btn-normal" name="set" value="Set Number">');
 } else {
-  echo('<p><label for="guess">Input Guess:</label>');
-  echo('<input type="text" name="guess" value=""><br/>');
-  echo('<input type="submit" class="btn btn-normal" name="set" value="Guess">');
+  if ($rows['correct']){
+    echo('You guessed the secret number '.$target.' in '.$rows['guesses'].' guesses!');
+  } else {
+    echo('Guesses so far: '.$rows['guesses']);
+    echo('<p><label for="guess">Input Guess:</label>');
+    echo('<input type="text" name="guess" value=""><br/>');
+    echo('<input type="submit" class="btn btn-normal" name="set" value="Guess">');
+  }
+
 }
 echo('</form>');
 
 // Show the list of students who got it right
 // Only appears if $rows != false
-if ( $rows ) {
+if ( $USER->instructor) {
     echo('<table border="1">'."\n");
     echo("<tr><th>User</th><th>Guesses</th><th>Correct</th></tr>\n");
     foreach ( $rows as $row ) {
