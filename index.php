@@ -24,6 +24,14 @@ if (isset($_POST['guess'])){ // Is POST set?
       $message = 'Lower...';
     } else {
       $message = 'Correct!';
+      $PDOX->queryDie("INSERT INTO {$p}helloTsugi
+            (link_id, user_id, correct)
+            VALUES ( :LI, :UI, True)",
+            array(
+                ':LI' => $LINK->id,
+                ':UI' => $USER->id
+            )
+      );
     }
     $_SESSION['success'] = $message; // Tell the student how they did.
   }
