@@ -13,7 +13,7 @@ array( "{$CFG->dbprefix}helloTsugi",
     guesses     SMALLINT,
     correct     BOOLEAN,
 
-    UNIQUE(link_id, user_id)
+    CONSTRAINT U_id UNIQUE(link_id, user_id)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8")
 );
 ?>
