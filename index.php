@@ -8,13 +8,13 @@ $LTI = LTIX::requireData();
 
 // Handle the POST Data
 $p = $CFG->dbprefix;
-$target = Settings::linkGet('target');
+$target = $LTI->link->getJsonKey('target', '');
 
 if (isset($_POST['guess'])){ // Is POST set?
   $message = '';
   if ($USER->instructor) { // It's an instructor
     if (isset($_POST['set'])) { // We're setting a new number
-      Settings::linkSet('target', $_POST['guess']);
+      $LTI->link->setJsonKey('target', $_POST['guess']);
       $message = 'Target Updated - New Number: '.$_POST['guess'];
       // Clear the student's guesses
       $PDOX->queryDie("DELETE FROM {$p}helloTsugi WHERE link_id = :LI",
