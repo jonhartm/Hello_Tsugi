@@ -81,7 +81,7 @@ $OUTPUT->flashMessages();
 echo('<form method="post">');
 if ($USER->instructor) {
   echo('Current Number: '.$target);
-  echo('<p><label for="guess">Enter Number for Students to Guess:</label>');
+  echo('<p><label for="guess">Enter Number for Students to Guess:&nbsp</label>');
   echo('<input type="text" name="guess" value=""><br/>');
   echo('<input type="submit" class="btn btn-normal" name="set" value="Set Number">');
 } else {
@@ -89,7 +89,7 @@ if ($USER->instructor) {
     echo('You guessed the secret number '.$target.' in '.$rows['guesses'].' guesses!');
   } else {
     echo('Guesses so far: '.$rows['guesses']);
-    echo('<p><label for="guess">Input Guess:</label>');
+    echo('<p><label for="guess">Input Guess:&nbsp</label>');
     echo('<input type="text" name="guess" value=""><br/>');
     echo('<input type="submit" class="btn btn-normal" name="set" value="Guess">');
   }
